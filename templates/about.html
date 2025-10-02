@@ -1,0 +1,19 @@
+<html lang="sv">
+{% extends 'template.html' %}
+{% block content %}
+    <div class="about-box">
+        <div class="about-card">
+            <legend>About</legend>
+            <h3>{{ translation[lang]["about"] }}</h3>
+            {% if lang == "english" %}
+                <a href="{{ url_for('about', lang='swedish') }}">
+                    <button class="btn btn-primary w-100">Change to Swedish</button>
+                </a>
+            {% else %}
+                <a href="{{ url_for('about', lang='english') }}">
+                    <button class="btn btn-primary w-100">Change to English</button>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
