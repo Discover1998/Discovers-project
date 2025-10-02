@@ -1,7 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import validators, StringField, PasswordField, BooleanField, SubmitField, IntegerField
-from wtforms.validators import Email, Regexp, EqualTo, DataRequired, Length
+from wtforms import validators, StringField, PasswordField, BooleanField, SubmitField, IntegerField, DateField, SelectField
+from wtforms.validators import Email, Regexp, EqualTo, DataRequired, Length, ValidationError
+from datetime import date
+from databases_init import SLOTS
 import data.person_number_checker
+
+
+def not_in_past(form, field):
+    if field.data and field.data < date.today():
+        raise ValidationError("Date cannot be in the past.")
+
 
 class RegistrationForm(FlaskForm):
     person_number = StringField("Person Number", validators=[DataRequired(), Length(min=10, max=13)])
@@ -47,3 +55,9 @@ class LoginForm(FlaskForm):
         validators=[DataRequired(), EqualTo("password", message="Passwords must match.")]
     )
 """
+
+class ReservationForm(FlaskForm):
+    day  = DateField("Date", format="%Y-%m-%d", validators=[DataRequired(), not_in_past])
+    slot = SelectField("Time slot", choices=[(s, s) for s in SLOTS], validators=[DataRequired()])
+    submit = SubmitField("Reserve")
+

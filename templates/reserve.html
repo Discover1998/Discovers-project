@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+{% block content %}
+    <div class="reserv-box">
+        <div class="reserv-card">
+            <legend>Make a Reservation</legend>
+            <form method="post" style="text-align: center;">
+                {{ form.csrf_token }}
+                <label style="font-size: 30px;">Date {{ form.day() }}</label>
+                <br>
+                <br>
+                <label style="font-size: 30px;">Time slot {{ form.slot() }}</label>
+               <p id="reserv-user-info" style="font-size: 25px; white-space: pre-line"></p>
+                {{ form.submit(class="btn btn-primary w-40") }}
+            </form>
+        </div>
+    </div>
+    <script>
+        var user_info = "Name: {{ first_name }} {{ last_name }} \nEmail: {{ email }}";
+        let i = 0;
+        function typeWriter() {
+            if (i < user_info.length) {
+                document.getElementById("reserv-user-info").innerHTML += user_info.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+        window.onload = typeWriter;
+    </script>
+{% endblock %}

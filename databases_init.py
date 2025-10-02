@@ -7,7 +7,7 @@ init(autoreset=True)
 
 GREEN_HSV = Fore.GREEN
 RED_HSV   = Fore.RED
-
+SLOTS = ("12:00-14:00", "14:00-16:00")
 
 #Work! 10-01
 def database_connection():
@@ -68,33 +68,53 @@ def create_table():
 #Work! 10-01
 def insert_customer(person_number, first_name, last_name, email, password, phone, address):
     person_number = str(person_number)
-    if person_number[0] == "1" or person_number[0] == "2":
+    if person_number[0] in ("1", "2"):
         person_number = person_number[2:]
-    current_pno = ""
-    for letter in person_number:
-        if letter in "-":
-            continue
-        else:
-            current_pno += letter
+    current_pno = "".join([c for c in person_number if c != "-"])
 
     db = database_connection()
     try:
         if db.is_connected():
             cur = db.cursor()
             cur.execute("USE Discovers_db")
+            cur.execute("SELECT id FROM customers WHERE person_number=%s OR email=%s", (current_pno, email))
+            existing = cur.fetchone()
+            if existing:
+                print(f"{RED_HSV}Customer already exists with this personal number or email{Style.RESET_ALL}")
+                return False
+
+            # insert new customer
             cur.execute(
                 """
                 INSERT INTO customers
                   (person_number, first_name, last_name, email, password, phone, address, permission, verified, gender, created_at)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
-                (current_pno, first_name, last_name, email, password, str(phone), address, "user", False, gender_checker(person_number), datetime.datetime.now())
+                (
+                    current_pno,
+                    first_name,
+                    last_name,
+                    email,
+                    password,
+                    str(phone),
+                    address,
+                    "user",
+                    False,
+                    gender_checker(person_number),
+                    datetime.datetime.now(),
+                ),
             )
             db.commit()
-            print(f"{GREEN_HSV}New customer {first_name} {last_name} has been inserted successfully{Style.RESET_ALL}")
-            return True
-        print(f"{RED_HSV}customer {first_name} {last_name} not created{Style.RESET_ALL}")
-        return False
+            print(f"{GREEN_HSV}New customer {first_name} {last_name} inserted successfully{Style.RESET_ALL}")
+            return True, "Customer created successfully"
+
+        print(f"{RED_HSV}Customer not created: no DB connection{Style.RESET_ALL}")
+        return False, "Database connection error"
+
+    except mysql.connector.Error as err:
+        print(err)
+        return False, f"MySQL Error: {err}"
+
     finally:
         db.close()
 #Work! 10-01
@@ -229,7 +249,7 @@ def create_admins_table():
             cur.execute("USE Discovers_db")
             cur.execute(
                 """CREATE TABLE IF NOT EXISTS admins (
-                user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INT AUTO_INCREMENT PRIMARY KEY,
                 first_name VARCHAR(100),
                 last_name VARCHAR(100),
                 email VARCHAR(255),
@@ -265,6 +285,74 @@ def insert_admins(first_name, last_name, email, password, phone, address):
         db.close()
 
 
+############################################
+#              Reservation                 #
+############################################
+def create_reservations_table():
+    db = database_connection()
+    try:
+        if db.is_connected():
+            cur = db.cursor()
+            cur.execute("USE Discovers_db")
+            cur.execute(
+                """
+                CREATE TABLE IF NOT EXISTS reservations (
+                  id INT AUTO_INCREMENT PRIMARY KEY,
+                  day DATE NOT NULL,
+                  slot VARCHAR(11) NOT NULL,  -- "12:00-14:00" or "14:00-16:00"
+                  name VARCHAR(120) NOT NULL,
+                  email VARCHAR(255) NOT NULL,
+                  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  UNIQUE KEY uq_day_slot (day, slot)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                """
+            )
+            db.commit()
+            print(f"{GREEN_HSV}Reservations Table Created Successfully{Style.RESET_ALL}")
+            return True
+        print(f"{RED_HSV}Table Not Created{Style.RESET_ALL}")
+        return False
+    finally:
+        db.close()
+
+
+
+def get_booked_slots(day_iso: str):
+    """Return a set of booked slot strings for given day (YYYY-MM-DD)."""
+    db = database_connection()
+    try:
+        if db.is_connected():
+            cur = db.cursor()
+            cur.execute("USE Discovers_db")
+            cur.execute("SELECT slot FROM reservations WHERE day = %s", (day_iso,))
+            return {row[0] for row in cur.fetchall()}
+        return set()
+    finally:
+        db.close()
+
+def insert_reservation(day_iso: str, slot: str, name: str, email: str):
+    """Insert a reservation. Returns True if inserted, False if duplicate or error."""
+    db = database_connection()
+    try:
+        if db.is_connected():
+            cur = db.cursor()
+            cur.execute("USE Discovers_db")
+            cur.execute(
+                """
+                INSERT INTO reservations (day, slot, name, email)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (day_iso, slot, name, email)
+            )
+            db.commit()
+            return True
+        return False
+    except mysql.connector.IntegrityError:
+        return False
+    finally:
+        db.close()
+
+
 if __name__ == '__main__':
     print("#===================== Welcome to database checker =====================#")
     #create_database()
@@ -276,3 +364,6 @@ if __name__ == '__main__':
     for keys, values in show_customers().items():
         print(f"{keys} : {values}")
         print()
+
+    print("create reservations table")
+    create_reservations_table()

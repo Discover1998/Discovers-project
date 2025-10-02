@@ -256,3 +256,90 @@ html, body {
   font-size: 3rem;
   margin-bottom: 1rem;
 }
+
+/*####################*/
+/*#    reserv page   #*/
+/*####################*/
+.reserv-box{
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.reserv-card{
+  background: rgba(255,255,255,.70);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  width: 100%;
+  max-width: 700px;
+  padding: 20px;
+}
+
+.reserv-card legend{
+  text-align: center;
+  width: 100%;
+  display: block;
+  font-weight: bold;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/*####################*/
+/*#    home page    #*/
+/*####################*/
+.home-box{
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.home-card{
+  background: rgba(255,255,255,.70);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  width: 100%;
+  max-width: 1000px;
+  padding: 60px;
+}
+
+.home-card legend{
+  text-align: center;
+  width: 100%;
+  display: block;
+  font-weight: bold;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+#the-home-text-home {
+    font-size: 30px;
+    text-align: center;
+    padding: 5px;
+    min-height: 60px;
+    white-space: pre;
+    font-weight: 800;
+    position: relative;
+}
+
+#the-home-text-home::after {
+    content: "●";
+    display: inline-block;
+    margin-left: 2px;
+    animation: blink 0.7s steps(1, end) infinite;
+}
+
+

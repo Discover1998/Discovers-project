@@ -3,10 +3,12 @@
     <br><br>
     <h1 id="the-main-text-index"></h1>
     <p id="the-decription-text-index"></p>
-    <div id="buttons-index">
-        <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}">Login</a>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Join us!</a>
-    </div>
+    {% if not session.get("id") %}
+        <div id="buttons-index">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}">Login</a>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Join us!</a>
+        </div>
+    {% endif %}
     <!--<p>{{visitor}} Visitors</p>-->
 
     <script>

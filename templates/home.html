@@ -1,9 +1,51 @@
 {% extends 'template.html' %}
 {% block content %}
-    <div class = "form-group">
-        <p>
-        {{ "welcome " + form.first_name.label }}
-        </p>
-
+    <div class="home-box">
+        <div class="home-card">
+            <legend> Welcome {{ first_name }} {{ last_name }} </legend>
+            <p id="the-home-text-home"></p>
+        </div>
     </div>
+
+    <script>
+        const descriptions = [
+            "Make a reservation",
+            "Explore the website",
+            "Check about to know us!",
+            "Check the developer"
+        ];
+        let dIndex = 0;
+        let cIndex = 0;
+        let isDeleting = false;
+        const speed = 150;
+
+        function typeDescription() {
+            const target = document.getElementById("the-home-text-home");
+            const current = descriptions[dIndex];
+
+            if (!isDeleting) {
+                target.textContent = current.substring(0, cIndex + 1);
+                cIndex++;
+                if (cIndex === current.length) {
+                    isDeleting = true;
+                    setTimeout(typeDescription, 1500);
+                    return;
+                }
+            } else {
+                // Deleting
+                target.textContent = current.substring(0, cIndex - 1);
+                cIndex--;
+                if (cIndex === 0) {
+                    isDeleting = false;
+                    dIndex = (dIndex + 1) % descriptions.length;
+                }
+            }
+
+            setTimeout(typeDescription, isDeleting ? 50 : speed);
+        }
+
+        window.onload = () => {
+            setTimeout(typeDescription, 100);
+        }
+    </script>
 {% endblock %}
