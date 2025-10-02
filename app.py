@@ -40,18 +40,23 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-
     if form.validate_on_submit():
         if personnummer_checker(form.person_number.data):
-            databases_init.insert_customer(form.person_number.data ,form.first_name.data, form.last_name.data, form.email.data, hash_password(form.password.data), form.phone.data, form.address.data)
+            databases_init.insert_customer(
+                form.person_number.data,
+                form.first_name.data,
+                form.last_name.data,
+                form.email.data,
+                hash_password(form.password.data),
+                form.phone.data,
+                form.address.data,
+            )
             flash(f"Account created for {form.first_name.data} {form.last_name.data}!", "success")
             return redirect(url_for('login'))
         flash("Wrong personal number!", "danger")
-        return redirect(url_for('register'))
-    else:
-        flash("Registration failed. Please try again.", "danger")
-
-    return render_template('register.html', title='Register' , form=form)
+    if request.method == 'POST' and not form.validate():
+        flash("Please fix the errors below.", "danger")
+    return render_template('register.html', title='Register', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
