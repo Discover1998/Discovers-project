@@ -1,10 +1,66 @@
 {% extends 'template.html' %}
 {% block content %}
-    <h1 id="the-main-text-index">Discovers Company</h1>
-    <p id="the-decription-text-index">Build your dream with us!</p>
+    <br><br>
+    <h1 id="the-main-text-index"></h1>
+    <p id="the-decription-text-index"></p>
     <div id="buttons-index">
-        <a class="btn btn-primary btn-lg" href = "{{ url_for('login') }}">Login</a>
-        <a class="btn btn-primary btn-lg" href = "{{ url_for('register') }}">Join us!</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}">Login</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Join us!</a>
     </div>
-<p>{{visitor}} Visitors</p>
+    <!--<p>{{visitor}} Visitors</p>-->
+
+    <script>
+        // Company name typing effect
+        const text = "{{ company_name }}";
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                document.getElementById("the-main-text-index").innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 200);
+            }
+        }
+
+        // Descriptions typing + deleting effect
+        const descriptions = [
+                              "New car services!",
+                              "Fault diagnostics",
+                              "Parts replacement",
+                              "Upgrades & tuning"
+                            ];
+        let dIndex = 0;  // which sentence
+        let cIndex = 0;  // which character in sentence
+        let isDeleting = false;
+        const speed = 150; // typing speed
+
+        function typeDescription() {
+            const target = document.getElementById("the-decription-text-index");
+            const current = descriptions[dIndex];
+
+            if (!isDeleting) {
+                target.textContent = current.substring(0, cIndex + 1);
+                cIndex++;
+                if (cIndex === current.length) {
+                    isDeleting = true;
+                    setTimeout(typeDescription, 1500);
+                    return;
+                }
+            } else {
+                // Deleting
+                target.textContent = current.substring(0, cIndex - 1);
+                cIndex--;
+                if (cIndex === 0) {
+                    isDeleting = false;
+                    dIndex = (dIndex + 1) % descriptions.length; // move to next sentence
+                }
+            }
+
+            setTimeout(typeDescription, isDeleting ? 50 : speed);
+        }
+
+        window.onload = () => {
+            typeWriter();
+            setTimeout(typeDescription, 3000); // start after company name appears
+        }
+    </script>
 {% endblock %}

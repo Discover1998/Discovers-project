@@ -270,7 +270,7 @@ if __name__ == '__main__':
     #create_database()
     #create_table()
     print(get_information_from_id(1))
-    #insert_customer(9802141111, "Najem", "Aldeen", "ngmaldin7@gmail.com", "12345", "0737600483", "street")
+    #insert_customer(9802141111, "Najem", "Aldeen", "ngmaldin7@gmail.com", "12345", "0737600483", "HallebyVägen 6B")
     #print(select_customer("19980214-1111"))
     print("Users in current DB:")
     for keys, values in show_customers().items():

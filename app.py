@@ -90,7 +90,7 @@ def home():
 
 @app.route('/about')
 def about():
-    # get lang from URL query string (?lang=swedish) default to english
+    # get lang from URL query string (?lang=swedish), default to english
     lang = request.args.get("lang", "english")
     return render_template('about.html', title='About', lang=lang, translation=read_file_json(translations))
 

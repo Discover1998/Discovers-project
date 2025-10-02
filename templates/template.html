@@ -9,6 +9,8 @@
     {% else %}
         <title>Discovers Company</title>
     {% endif %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <body>
@@ -23,15 +25,20 @@
         </a>
         <ul class="nav justify-content-end bg-primary" data-bs-theme="dark" id="menu">
 
+            {% if request.endpoint == 'home' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">logout</a>
+                </li>
+            {% endif %}
             {# Show "Main" only if NOT on index page #}
-            {% if request.endpoint != 'index' %}
+            {% if request.endpoint != 'index' and request.endpoint != 'home' and request.endpoint != 'login' %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('login') }}">Login</a>
             </li>
             {% endif %}
 
             {# Show "Login" only if NOT on login page #}
-            {% if request.endpoint != 'login' %}
+            {% if request.endpoint != 'login' and request.endpoint != 'home'%}
                 {% if request.endpoint != 'index' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}">Main</a>
@@ -39,7 +46,7 @@
                 {% endif %}
             {% endif %}
             {# Show "Register" only if NOT on register page #}
-            {% if request.endpoint != 'register' %}
+            {% if request.endpoint != 'register' and request.endpoint != 'home'%}
                 {% if request.endpoint != 'index' %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('register') }}">Register</a>
@@ -56,16 +63,18 @@
                     <a class="nav-link" href="{{ url_for('about') }}">About</a>
                 </li>
             {% endif %}
-
-
         </ul>
     </header>
+
 
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ category }} text-center">{{ message }}</div>
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
