@@ -1,5 +1,4 @@
 # Discovers-project
---
 
 ## Functionality:
 1. form classes for Register and Login.
