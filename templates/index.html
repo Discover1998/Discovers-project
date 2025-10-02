@@ -1,0 +1,10 @@
+{% extends 'template.html' %}
+{% block content %}
+    <h1 id="the-main-text-index">Discovers Company</h1>
+    <p id="the-decription-text-index">Build your dream with us!</p>
+    <div id="buttons-index">
+        <a class="btn btn-primary btn-lg" href = "{{ url_for('login') }}">Login</a>
+        <a class="btn btn-primary btn-lg" href = "{{ url_for('register') }}">Join us!</a>
+    </div>
+<p>{{visitor}} Visitors</p>
+{% endblock %}

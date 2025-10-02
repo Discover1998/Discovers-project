@@ -1,0 +1,63 @@
+{% extends 'template.html' %}
+
+{% block content %}
+    <p>Do you have an account? <a href="{{ url_for('login') }}">Login</a></p>
+
+    <form class="registration_form" action="" method="POST">
+        {{ form.hidden_tag() }}
+
+        <legend>Create an Account</legend>
+
+        <div class="form-group">
+            {{ form.first_name.label }}
+            {{ form.first_name() }}
+            {% for e in form.first_name.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.last_name.label }}
+            {{ form.last_name() }}
+            {% for e in form.last_name.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email() }}
+            {% for e in form.email.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password() }}
+            {% for e in form.password.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.confirm_password.label }}
+            {{ form.confirm_password() }}
+            {% for e in form.confirm_password.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.year.label }}
+            {{ form.year() }}
+            {% for e in form.year.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.month.label }}
+            {{ form.month() }}
+            {% for e in form.month.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.day.label }}
+            {{ form.day() }}
+            {% for e in form.day.errors %}<small class="error">{{ e }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group">
+            {{ form.submit() }}
+        </div>
+    </form>
+{% endblock %}
