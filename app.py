@@ -1,8 +1,11 @@
 #from classes.admin import Admin
 #from classes.user import User
+import flask
+
 from classes.forms import LoginForm, RegistrationForm
 from flask import Flask, render_template, flash, redirect, url_for, session, request
 import tokens, json, hashlib, databases_init, calendar
+from data.checker import check_if_admin
 from data.person_number_checker import personnummer_checker, gender_checker
 from classes.forms import ReservationForm
 from datetime import date, timedelta
@@ -81,6 +84,11 @@ def login():
         if check is not None:
             session["id"] = check[0]
             print(f"Successfully logged in {check[2]} {check[3]}")
+            current_permission = check_if_admin(check)
+            if current_permission:
+                session['admin'] = True
+                flash(f"Admin successfully logged in! Welcome {check[2]} {check[3]}", "success")
+                return redirect(url_for('admin_db'))
             flash(f"Successfully logged in! Welcome {check[2]} {check[3]}", "success")
             return redirect(url_for('home'))
         else:
@@ -130,6 +138,69 @@ def reserve():
     return render_template("reserve.html", form=form, first_name=cu[2], last_name=cu[3], email=cu[4])
 
 
+@app.route("/admin_db", methods=["GET", "POST"])
+def admin_db():
+    if "id" not in session or not session.get("admin"):
+        return redirect(url_for("login"))
+
+    user_id = session["id"]
+    current_info = databases_init.get_information_from_id(user_id)
+    if not current_info:
+        session.clear()
+        return redirect(url_for("login"))
+
+    first_name = current_info[2]
+    last_name = current_info[3]
+
+    form = RegistrationForm()
+    all_users = {}
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            # validate Swedish personal number, etc.
+            if personnummer_checker(form.person_number.data):
+                created = databases_init.insert_customer(
+                    form.person_number.data,
+                    form.first_name.data,
+                    form.last_name.data,
+                    form.email.data,
+                    hash_password(form.password.data),
+                    form.phone.data,
+                    form.address.data
+                )
+                if created:
+                    flash("The user is now registered.", "success")
+
+                    return redirect(url_for("admin_db"))
+                else:
+                    flash("Can't register the user right now!", "danger")
+            else:
+                flash("Invalid person number.", "danger")
+        else:
+            flash("Please fix the highlighted errors.", "warning")
+
+    try:
+        all_users = databases_init.show_customers()
+    except Exception:
+        all_users = {}
+    sanitized = {}
+    for uid, vals in all_users.items():
+        if isinstance(vals, (list, tuple)) and len(vals) >= 11:
+            vals = list(vals)
+            del vals[4]
+            sanitized[uid] = vals
+        else:
+            sanitized[uid] = vals
+
+    return render_template(
+        "admin_db.html",
+        title="Admin Dashboard",
+        user_id=user_id,
+        first_name=first_name,
+        last_name=last_name,
+        form=form,
+        all_users=sanitized
+    )
 
 
 @app.route('/about')
@@ -140,7 +211,8 @@ def about():
 
 @app.route('/developer')
 def developer():
-    return render_template('developer.html', title='Developer')
+    lang = request.args.get("lang", "english")
+    return render_template('developer.html', title='Developer', lang=lang, translation=read_file_json(translations))
 
 @app.route('/logout')
 def logout():

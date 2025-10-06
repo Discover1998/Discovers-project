@@ -1,0 +1,141 @@
+{% extends 'template.html' %}
+{% block content %}
+  <h1>Admin Dashboard</h1>
+  <h4>Welcome, Admin {{ first_name }} {{ last_name }}</h4>
+
+  <div style="display:flex; gap:0.5rem; margin:0.75rem 0;">
+    <button id="check_users" type="button" value="false" onclick="check_users_func()">Check users</button>
+    <button id="add_users"   type="button" value="false" onclick="add_users_func()">Add user</button>
+  </div>
+
+  <!-- Users table -->
+  <div id="users_table" style="display:none; margin-top:1rem; width:100%;">
+    <legend>All users</legend>
+    <div style="overflow:auto;">
+      <table border="1" cellpadding="6" cellspacing="0" style="min-width:900px;">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Person Number</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Permission</th>
+            <th>Gender</th>
+            <th>Verified</th>
+            <th>Created at</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, values in all_users.items() %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ values[0] }}</td>
+            <td>{{ values[1] }}</td>
+            <td>{{ values[2] }}</td>
+            <td>{{ values[3] }}</td>
+            <td>{{ values[4] }}</td>
+            <td>{{ values[5] }}</td>
+            <td>{{ values[6] }}</td>
+            <td>{{ values[7] }}</td>
+            <td>{{ values[8] }}</td>
+            <td>{{ values[9] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- User form -->
+  <div id="create_users" style="display:none; margin-top:1rem;">
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <legend>Add user</legend>
+
+      <div class="form-group">
+        {{ form.first_name.label }}
+        {{ form.first_name(class="form-control") }}
+        {% for e in form.first_name.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.last_name.label }}
+        {{ form.last_name(class="form-control") }}
+        {% for e in form.last_name.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.person_number.label }}
+        {{ form.person_number(class="form-control") }}
+        {% for e in form.person_number.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class="form-control") }}
+        {% for e in form.email.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.password.label }}
+        {{ form.password(class="form-control") }}
+        {% for e in form.password.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.confirm_password.label }}
+        {{ form.confirm_password(class="form-control") }}
+        {% for e in form.confirm_password.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.phone.label }}
+        {{ form.phone(class="form-control") }}
+        {% for e in form.phone.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.address.label }}
+        {{ form.address(class="form-control") }}
+        {% for e in form.address.errors %}<small class="error">{{ e }}</small>{% endfor %}
+      </div>
+
+      <div class="form-group" style="margin-top:0.5rem;">
+        {{ form.submit(class="btn btn-primary w-100") }}
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function check_users_func() {
+      const btn = document.getElementById('check_users');
+      const wrap = document.getElementById('users_table');
+      if (btn.value === 'false') {
+        btn.value = 'true';
+        wrap.style.display = 'block';
+        btn.textContent = 'Hide users';
+      } else {
+        btn.value = 'false';
+        wrap.style.display = 'none';
+        btn.textContent = 'Check users';
+      }
+    }
+
+    function add_users_func() {
+      const btn = document.getElementById('add_users');
+      const wrap = document.getElementById('create_users');
+      if (btn.value === 'false') {
+        btn.value = 'true';
+        wrap.style.display = 'block';
+        btn.textContent = 'Hide form';
+      } else {
+        btn.value = 'false';
+        wrap.style.display = 'none';
+        btn.textContent = 'Add user';
+      }
+    }
+  </script>
+{% endblock %}

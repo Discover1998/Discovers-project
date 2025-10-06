@@ -31,3 +31,13 @@ def write_current_value(current_value):
         return
     except FileNotFoundError as e:
         print(e)
+
+def check_if_admin(customer):
+    try:
+        if customer[8] == "admin":
+            return True
+        return False
+    except Exception as e:
+        print(e)
+    finally:
+        print(f"the current customer is: {customer[8]}.")
