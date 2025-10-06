@@ -7,3 +7,4 @@
 4. Database connection and functionality.
 5. JSON file for the language changer between English and Swedish.
 6. Reservation
+7. Admin dashboard
