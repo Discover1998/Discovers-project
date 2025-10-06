@@ -4,7 +4,7 @@
     <div class="about-box">
         <div class="about-card">
             <legend>About</legend>
-            <h3>{{ translation[lang]["about"] }}</h3>
+            <h3>{{ translation[lang]["about"]|safe }}</h3>
             {% if lang == "english" %}
                 <a href="{{ url_for('about', lang='swedish') }}">
                     <button class="btn btn-primary w-100">Change to Swedish</button>

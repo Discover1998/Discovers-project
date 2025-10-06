@@ -343,3 +343,38 @@ html, body {
 }
 
 
+/*####################*/
+/*#  Dashboard page  #*/
+/*####################*/
+.db-box{
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.db-card{
+  background: rgba(255,255,255,.70);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  width: 100%;
+  max-width: 1200px;
+  padding: 60px;
+}
+
+.db-card legend{
+  text-align: center;
+  width: 100%;
+  display: block;
+  font-weight: bold;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+
